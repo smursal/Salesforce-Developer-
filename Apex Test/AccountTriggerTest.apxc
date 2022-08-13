@@ -1,0 +1,32 @@
+@isTest
+public class AccountTriggerTest {
+    @isTest static void TestCreateNewAccountInBulk() {
+        // Test Setup data
+        // Create 200 new Accounts
+        List<Account> accts = new List<Account>();
+        for(Integer i=0; i < 200; i++) {
+            Account acc = new Account();
+            acc.Name = 'Test Account '+i;
+            acc.BillingState = 'CA';
+            accts.add(acc);
+           
+        }
+    
+    // Perform Test
+    
+       Test.startTest();
+       insert accts;
+       Test.stopTest();
+                          
+    
+        // Verify that 200 new Accounts were inserted
+        List<Account> verifyAccts = [SELECT  ShippingState FROM Account];
+        for (Account a : verifyAccts) {
+         System.assertEquals('CA', a.ShippingState, 'ERROR') ;    
+         
+        }
+       
+                                 
+    }
+
+}
