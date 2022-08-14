@@ -1,0 +1,11 @@
+public class StaticClassExample {
+    
+    public static void method1()
+    {
+        System.debug('I am a static method');
+    }
+    public void method2()
+    {
+        System.debug('I am not a static method');
+    }
+}

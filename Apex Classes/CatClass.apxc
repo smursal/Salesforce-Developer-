@@ -1,0 +1,6 @@
+public class CatClass {
+    
+    public String name;
+    public static integer count;
+
+}
