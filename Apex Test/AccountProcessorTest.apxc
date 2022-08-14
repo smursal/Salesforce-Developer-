@@ -1,0 +1,35 @@
+@isTest
+public class AccountProcessorTest {
+    @isTest
+    public static void CountContactTest(){
+        
+        //Load Test data
+        List<Account> accounts = new List<Account>();
+        //Do the test
+        for (Integer i=0; i<300; i++){
+            accounts.add(new Account(Name ='Test Account'+ i));    
+        }
+        insert accounts;
+        
+        List <Contact> contacts = new List<Contact>();
+        List<Id> accIds = new List<id>();
+        for(Account acc : accounts) {
+            contacts.add(new Contact(FirstName= acc.Name, LastName = 'TestContact', accountId = acc.id));
+            accIds.add(acc.id);
+        }
+        insert contacts;
+        
+        //Do the test
+        Test.startTest();
+        AccountProcessor.countContacts(accIds);
+        Test.stopTest();
+        
+        //Check result
+        List<Account> accts = [SELECT id, Number_of_Contacts__c FROM Account];
+        for (Account acc : accts){
+            System.assertEquals(1, acc.Number_Of_Contacts__c, 'ERROR: At least 1 Account with incorrect Contact');
+        }
+    }
+    
+    
+}
