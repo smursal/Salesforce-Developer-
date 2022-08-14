@@ -1,0 +1,18 @@
+trigger ClosedOpportunityTrigger on Opportunity (after insert, after update) {
+    
+    // Get the related opportunities for the accounts in this trigger.        
+    List<Task> ListTaskInsert = new List <Task>();
+    for (Opportunity opp :Trigger.new) {
+        if (opp.StageName == 'Closed Won')  {
+            Task t = new Task();
+            t.Subject = 'Follow Up Test Task';
+            t.WhatId = opp.id;
+            ListTaskInsert.add(t);
+        }
+    }
+    if (ListTaskInsert.size() > 0) {
+        
+        // Perform DML on a collection
+        insert ListTaskInsert;
+    }
+}
