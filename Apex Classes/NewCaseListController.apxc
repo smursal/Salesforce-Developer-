@@ -1,0 +1,15 @@
+public class NewCaseListController {
+    private String sortOrder = 'Status';
+    public List<Case> getNewCases() {
+        List<Case> results = Database.query(
+            'SELECT Id, CaseNumber ' +
+            'FROM Case ' +
+            'ORDER BY ' + sortOrder + ' ASC ' +
+            'LIMIT 10');
+        return results;
+        
+    }
+    
+    
+    
+}

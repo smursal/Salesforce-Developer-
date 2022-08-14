@@ -1,0 +1,9 @@
+@isTest
+public class TestRestrictContactByName {
+    @isTest static void TestContactInvalidName () {
+        Contact con = new Contact();
+        con.LastName = 'INVALIDNAME';
+        insert con;
+    }
+
+}
