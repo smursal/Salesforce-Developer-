@@ -1,0 +1,40 @@
+trigger DedupeLead on Lead (before insert) {
+   List<Group> dataQualityGroup = [Select Id
+                                      From Group
+                                      Where DeveloperName = 'Data_Quality'
+                                       LIMIT 1]; 
+    for (Lead myLead : Trigger.new){
+        If(myLead.Email != null) {
+        //Search for matching contacts
+        List<Contact> matchingContacts = [SELECT id, FirstName, LastName, Account.Name  from Contact
+                                            WHERE Email =: myLead.Email];
+        System.debug(matchingContacts.size()+ ' contact(s) found, ');
+        //If matches are found
+        If (!matchingContacts.isEmpty()) {
+            if (!dataQualityGroup.isEmpty()){
+            myLead.OwnerId = dataQualityGroup.get(0).id;
+           
+            }
+            
+              //Add the dupe contact IDs into the lead description
+             String dupeContactMessage = 'Duplicate constact(s) found:\n';
+            for (Contact matchingContact :matchingContacts ) {
+                dupeContactMessage += matchingContact.FirstName + ' '
+                                    + matchingContact.LastName + ', '
+                                    + matchingContact.Account.Name + ' ('
+                                    + matchingContact.Id + ')\n';
+                
+            }
+            if (myLead.Description != null){
+                dupeContactMessage += '\n'+ myLead.Description;
+            }
+            myLead.Description = dupeContactMessage;
+        }
+        
+      
+       
+      
+        }        
+    }
+
+}

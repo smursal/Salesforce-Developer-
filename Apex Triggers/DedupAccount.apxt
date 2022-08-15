@@ -1,0 +1,12 @@
+trigger DedupAccount on Account (after insert) {
+    
+  for(Account account : Trigger.New) {
+   Case c = new case();
+      c.subject = 'Dedupe this account';
+      c.OwnerId = '005IY000000ZpvLYAS';
+      c.AccountId= account.Id;
+      insert c;
+ 
+    }
+
+  }
