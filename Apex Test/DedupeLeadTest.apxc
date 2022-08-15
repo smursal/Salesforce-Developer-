@@ -1,0 +1,69 @@
+@isTest
+public class DedupeLeadTest {
+    
+    @isTest static void createLeadNoDupes() {
+        
+        String leadOwner = UserInfo.getUserId();
+        //create all records
+        Lead mylead        = new Lead ();
+        mylead.FirstName   = 'Sam';
+        mylead.LastName    = 'Bob';
+        myLead.Company     = 'AmazonB';
+        myLead.Email       = 'sbob@email.com';
+        myLead.Description = 'Please contact them after 5pm';
+        myLead.OwnerId     = leadOwner;
+        insert myLead;
+        // Use SOQL to find the latest values
+        Lead updatedLead   = [SELECT Owner.id,
+                                     Description
+                                 FROM Lead
+                             WHERE id = :myLead.Id];
+        // Run assertions
+        System.assertEquals(leadOwner, updatedLead.OwnerId);
+        System.assertEquals(myLead.Description, updatedLead.Description);
+        
+    }
+        
+        
+    @isTest static void createLeadMultipleDupes(){
+        String email = 'sbob@email.com';
+        //Create two dupe contacts
+        List<Contact> dupeContacts = new List<Contact>();
+        Contact firstDupe          = new Contact ();
+        firstDupe.FirstName        = 'Sam';
+        firstDupe.LastName         = 'Bob';
+        firstDupe.Email            = email;
+        dupeContacts.add(firstDupe);
+        
+        Contact secondDupe          = new Contact();
+        secondDupe.FirstName        = 'Sam';
+        secondDupe.LastName         = 'Bob';
+        secondDupe.Email            = email;
+        dupeContacts.add(secondDupe);
+        
+        //Create our Dupe Lead
+         Lead mylead        = new Lead ();
+        mylead.FirstName   = 'Sam';
+        mylead.LastName    = 'Bob';
+        myLead.Company     = 'AmazonB';
+        myLead.Email       = email;
+        myLead.Description = 'Please contact them after 5pm';
+        myLead.OwnerId     = UserInfo.getUserId();
+        insert myLead;
+        
+        Lead updatedLead   = [SELECT Owner.id,
+                                     Description
+                                 FROM Lead
+                             WHERE id = :myLead.Id];
+        // Get the data quality queue info
+        Group dataQualityQueue = [SELECT id
+                                     FROM Group
+                                     WHERE DeveloperName = 'Data_Quality'
+                                     LIMIT 1];
+            
+        // Run assertions
+        System.assertEquals(dataQualityQueue.id, updatedLead.OwnerId);
+        System.assert(updatedLead.Description.contains(firstDupe.id));
+        System.assert(updatedLead.Description.contains(secondDupe.id));
+    }
+}

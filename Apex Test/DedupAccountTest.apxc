@@ -1,0 +1,10 @@
+@isTest
+public class DedupAccountTest {
+
+    @isTest static  void createAccount() {
+        Account acc = new Account ();
+        acc.Name = 'EmotinalAcc';
+        insert acc;
+
+    }
+}
